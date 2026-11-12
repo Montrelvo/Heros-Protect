@@ -1,0 +1,27 @@
+name: Check prototype source
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Verify JavaScript syntax
+        run: node --check src/game.js
+      - name: Verify static site entrypoints
+        run: |
+          test -s index.html
+          test -s styles.css
+          test -s src/game.js
+          grep -q 'src/game.js' index.html
+          grep -q 'styles.css' index.html
+          grep -q 'id="renderCanvas"' index.html
