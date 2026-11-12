@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#091526">
+  <meta name="description" content="Heroes Protect: patrol a living city as an invulnerable guardian. An original Babylon.js superhero game prototype.">
+  <title>Heroes Protect | Citywatch Prototype</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <canvas id="renderCanvas" aria-label="Interactive 3D city game"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">H<span class="plus">+</span></span><span><strong>HEROES PROTECT</strong><small>CITYWATCH / PROTOTYPE 01</small></span></div>
+    <div class="district">NORTHBRIDGE <span class="dot"></span> DISTRICT 07</div>
+    <button id="menuBtn" class="icon-button" title="Help and restart" aria-label="Open help">?</button>
+  </header>
+
+  <main id="hud" class="hud" aria-live="polite">
+    <section class="stat-panel">
+      <div class="eyebrow">GUARDIAN STATUS</div>
+      <div class="stat-line"><span class="status-indicator"></span> <strong>INVULNERABLE</strong></div>
+      <div class="meta-line">No health bar. Every life matters.</div>
+      <div class="stat-divider"></div>
+      <div class="row-between"><span>PEOPLE & PLACES PROTECTED</span><strong id="progress">0 / 4</strong></div>
+      <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+      <div class="row-between soft"><span>FLIGHT MODE</span><strong id="flightState">GROUNDED</strong></div>
+      <div class="row-between soft"><span>TRAVEL SPEED</span><strong id="speedValue">0</strong></div>
+    </section>
+
+    <section class="mission-panel">
+      <div class="eyebrow">ACTIVE INCIDENT</div>
+      <div id="missionName" class="mission-title">Survey the city</div>
+      <div id="missionDesc" class="mission-desc">Find a signal and help the people of Northbridge.</div>
+      <div class="mission-divider"></div>
+      <div id="missionDistance" class="distance">DISTANCE —</div>
+      <div id="missionHint" class="hint">Launch with F, then steer toward the nearest beacon.</div>
+    </section>
+
+    <section class="map-panel">
+      <div class="map-header"><span>TACTICAL MAP</span><span>FIXED LAYOUT</span></div>
+      <canvas id="miniMap" width="196" height="196" aria-label="Map showing player and emergency locations"></canvas>
+      <div class="map-footer"><span><i class="legend me"></i> YOU</span><span><i class="legend call"></i> CALLS</span></div>
+    </section>
+
+    <div id="toast" role="status" class="toast"></div>
+    <div id="crosshair" class="crosshair" aria-hidden="true"><span></span><span></span></div>
+
+    <div class="desktop-controls">
+      <div class="keyline"><kbd>W A S D</kbd> MOVE <kbd>MOUSE</kbd> LOOK <kbd>F</kbd> FLY <kbd>SPACE</kbd> UP <kbd>CTRL</kbd> DOWN</div>
+      <div class="keyline"><kbd>SHIFT</kbd> BOOST <kbd>E</kbd> HELP <kbd>Q</kbd> COOL <kbd>J</kbd> PULSE <kbd>R</kbd> RESET</div>
+    </div>
+
+    <div id="touchControls" class="touch-controls">
+      <div class="dpad" aria-label="Movement controls">
+        <button data-hold="forward" class="pad up" aria-label="Move forward">▲</button>
+        <button data-hold="left" class="pad left" aria-label="Move left">◀</button>
+        <button data-hold="backward" class="pad down" aria-label="Move backward">▼</button>
+        <button data-hold="right" class="pad right" aria-label="Move right">▶</button>
+      </div>
+      <div class="actions">
+        <button data-action="flight" class="action main">FLY</button>
+        <button data-hold="ascend" class="action">UP</button>
+        <button data-hold="descend" class="action">DOWN</button>
+        <button data-hold="boost" class="action">BOOST</button>
+        <button data-action="interact" class="action main">HELP</button>
+        <button data-action="cool" class="action">COOL</button>
+        <button data-action="pulse" class="action">PULSE</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="intro" class="overlay">
+    <div class="intro-card">
+      <span class="eyebrow intro-tag">AN ORIGINAL SUPERHERO SANDBOX</span>
+      <div class="hero-glyph" aria-hidden="true">H<span>+</span></div>
+      <h1>THE CITY IS<br><em>COUNTING ON YOU.</em></h1>
+      <p>You are invulnerable. The city isn't. Begin atop Northbridge Tower, take to the sky, and answer four emergency calls.</p>
+      <div class="mission-pills"><span>01 / ROOFTOP FIRE</span><span>02 / STRANDED CIVILIAN</span><span>03 / RUNAWAY VEHICLE</span><span>04 / FALLEN DEBRIS</span></div>
+      <button id="startBtn" class="start-btn">BEGIN PATROL <span>↗</span></button>
+      <small>Keyboard + mouse on desktop. Touch controls appear on mobile. Requires an internet connection for Babylon.js.</small>
+    </div>
+  </div>
+
+  <div id="helpModal" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="help-card">
+      <button id="closeHelp" class="close-btn" aria-label="Close help">×</button>
+      <span class="eyebrow">MISSION BRIEFING</span>
+      <h2 id="helpTitle">Protect, don't conquer.</h2>
+      <p>Use F to fly; W/A/S/D to move; Space and Ctrl to change altitude; Shift to accelerate. The hero is invulnerable, but incidents remain unresolved until you intervene.</p>
+      <p>Use <strong>E</strong> near stranded civilians, vehicles and debris. Use <strong>Q</strong> near a fire to deploy a cooling blast. Use <strong>J</strong> or click to project a harmless strength shockwave.</p>
+      <p>Signal pillars and the map lead to four incidents. Completing the patrol proves the prototype's core rescue loop.</p>
+      <div class="help-actions"><button id="restartBtn" class="secondary-btn">RESET INCIDENTS</button><button id="resumeBtn" class="start-btn small">RESUME PATROL</button></div>
+    </div>
+  </div>
+
+  <noscript><div class="unsupported">Enable JavaScript to play Heroes Protect.</div></noscript>
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+  <script src="./src/game.js"></script>
+</body>
+</html>
