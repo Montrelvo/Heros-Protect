@@ -326,7 +326,7 @@
     transient.push({ mesh: ring, material: ringMat, age: 0, life: 0.55, mode: "burst", isCool });
   }
   function act(which) {
-    if (!active || menuOpen) return;
+    if (!active || (menuOpen && which !== "reset")) return;
     if (which === "flight") {
       flying = !flying;
       verticalSpeed = 0;
